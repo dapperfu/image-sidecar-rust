@@ -1,6 +1,6 @@
 [package]
 name = "sportball-sidecar-rust"
-version = "0.1.0"
+version = "0.1.0"  # Version managed by versioneer via pyproject.toml
 edition = "2021"
 authors = ["Sportball Team"]
 description = "High-performance Rust implementation for sportball JSON sidecar operations"

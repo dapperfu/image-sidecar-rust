@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "sportball-sidecar-rust"
-version = "0.1.0"
+dynamic = ["version"]
 description = "High-performance Rust implementation for sportball JSON sidecar operations"
 readme = "README.md"
 license = {text = "MIT"}
@@ -52,6 +52,8 @@ Documentation = "https://github.com/sportball/sportball-sidecar-rust#readme"
 python-source = "python"
 module-name = "sportball_sidecar_rust"
 manifest-path = "Cargo.toml"
+bindings = "pyo3"
+features = ["python"]
 
 [tool.black]
 line-length = 88

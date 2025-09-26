@@ -20,6 +20,9 @@ pub mod utils;
 #[cfg(feature = "python")]
 pub mod python;
 
+#[cfg(feature = "python")]
+pub use python::sportball_sidecar_rust;
+
 pub use sidecar::{
     SidecarManager, SidecarInfo, OperationType, SidecarError,
     ValidationResult, StatisticsResult, SidecarFormat, FormatManager

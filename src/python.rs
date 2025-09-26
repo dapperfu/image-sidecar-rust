@@ -320,7 +320,7 @@ impl From<StatisticsResult> for PyStatisticsResult {
 
 /// Python module definition
 #[pymodule]
-fn sportball_sidecar_rust(_py: Python, m: &PyModule) -> PyResult<()> {
+pub fn sportball_sidecar_rust(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PySportballSidecar>()?;
     m.add_class::<PySidecarFormat>()?;
     m.add_class::<PyOperationType>()?;
