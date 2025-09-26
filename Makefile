@@ -15,6 +15,42 @@ PIP = pip3
 .PHONY: all
 all: build
 
+# Release management targets
+.PHONY: release-daily release-weekly release-monthly release-quarterly
+release-daily:
+	@echo "🏷️  Creating daily release..."
+	python release.py --type daily
+
+release-weekly:
+	@echo "🏷️  Creating weekly release..."
+	python release.py --type weekly
+
+release-monthly:
+	@echo "🏷️  Creating monthly release..."
+	python release.py --type monthly
+
+release-quarterly:
+	@echo "🏷️  Creating quarterly release..."
+	python release.py --type quarterly
+
+# Dry run releases
+.PHONY: release-daily-dry release-weekly-dry release-monthly-dry release-quarterly-dry
+release-daily-dry:
+	@echo "🔍 Dry run: daily release..."
+	python release.py --type daily --dry-run
+
+release-weekly-dry:
+	@echo "🔍 Dry run: weekly release..."
+	python release.py --type weekly --dry-run
+
+release-monthly-dry:
+	@echo "🔍 Dry run: monthly release..."
+	python release.py --type monthly --dry-run
+
+release-quarterly-dry:
+	@echo "🔍 Dry run: quarterly release..."
+	python release.py --type quarterly --dry-run
+
 # Build targets
 .PHONY: build
 build: $(RELEASE_BINARY)
