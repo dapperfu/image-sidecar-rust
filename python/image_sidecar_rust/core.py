@@ -88,8 +88,8 @@ class ImageSidecar:
             max_workers: Maximum number of worker threads. If None, uses all available CPU cores.
         """
         try:
-            import sportball_sidecar_rust.sportball_sidecar_rust as rust_ext
-            self._rust_impl = rust_ext.PySportballSidecar(max_workers)
+            import image_sidecar_rust.image_sidecar_rust as rust_ext
+            self._rust_impl = rust_ext.PyImageSidecar(max_workers)
             self._rust_available = True
         except ImportError:
             self._rust_impl = None
@@ -227,7 +227,7 @@ class ImageSidecar:
                 op_type = operation
             
             # Convert Python OperationType to Rust PyOperationType
-            import sportball_sidecar_rust.sportball_sidecar_rust as rust_ext
+            import image_sidecar_rust.image_sidecar_rust as rust_ext
             rust_op_type = rust_ext.PyOperationType(str(op_type))
             
             sidecar_info = self._rust_impl.create_sidecar(
@@ -287,7 +287,7 @@ class ImageSidecar:
                 fmt = target_format
             
             # Convert Python SidecarFormat to Rust PySidecarFormat
-            import sportball_sidecar_rust.sportball_sidecar_rust as rust_ext
+            import image_sidecar_rust.image_sidecar_rust as rust_ext
             rust_fmt = rust_ext.PySidecarFormat(str(fmt))
             
             return self._rust_impl.convert_directory_format(directory_str, rust_fmt)
@@ -327,7 +327,7 @@ class ImageSidecar:
             fmt = format
         
         # Convert Python SidecarFormat to Rust PySidecarFormat
-        import sportball_sidecar_rust.sportball_sidecar_rust as rust_ext
+        import image_sidecar_rust.image_sidecar_rust as rust_ext
         rust_fmt = rust_ext.PySidecarFormat(str(fmt))
         
         self._rust_impl.set_default_format(rust_fmt)
