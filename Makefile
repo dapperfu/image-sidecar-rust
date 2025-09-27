@@ -1,12 +1,12 @@
-# Makefile for sportball-sidecar-rust
-# High-performance Rust implementation for sportball JSON sidecar operations
+# Makefile for image-sidecar-rust
+# High-performance Rust implementation for image JSON sidecar operations
 
 # Variables
 CARGO = cargo
 RUST_LOG = info
 TARGET_DIR = target
-RELEASE_BINARY = $(TARGET_DIR)/release/sportball-sidecar-rust
-DEBUG_BINARY = $(TARGET_DIR)/debug/sportball-sidecar-rust
+RELEASE_BINARY = $(TARGET_DIR)/release/image-sidecar-rust
+DEBUG_BINARY = $(TARGET_DIR)/debug/image-sidecar-rust
 MATURIN = maturin
 PYTHON = python3
 PIP = pip3
@@ -101,11 +101,11 @@ bench-release:
 # Installation
 .PHONY: install
 install: $(RELEASE_BINARY)
-	cp $(RELEASE_BINARY) /usr/local/bin/sportball-sidecar-rust
+	cp $(RELEASE_BINARY) /usr/local/bin/image-sidecar-rust
 
 .PHONY: uninstall
 uninstall:
-	rm -f /usr/local/bin/sportball-sidecar-rust
+	rm -f /usr/local/bin/image-sidecar-rust
 
 # Documentation
 .PHONY: docs
@@ -173,7 +173,7 @@ python-install:
 
 .PHONY: python-uninstall
 python-uninstall:
-	$(PIP) uninstall sportball-sidecar-rust -y
+	$(PIP) uninstall image-sidecar-rust -y
 
 .PHONY: python-clean
 python-clean:

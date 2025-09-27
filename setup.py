@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Setup script for sportball-sidecar-rust.
+Setup script for image-sidecar-rust.
 This is a minimal setup.py required by versioneer for mixed Python/Rust projects.
 The actual build is handled by maturin via pyproject.toml.
 """

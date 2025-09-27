@@ -3,15 +3,15 @@ requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "sportball-sidecar-rust"
+name = "image-sidecar-rust"
 dynamic = ["version"]
-description = "High-performance Rust implementation for sportball JSON sidecar operations"
+description = "High-performance Rust implementation for image JSON sidecar operations"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Sportball Team", email = "team@sportball.com"}
+    {name = "Image Sidecar Team", email = "team@imagesidecar.com"}
 ]
-keywords = ["sportball", "sidecar", "json", "validation", "photography", "rust"]
+keywords = ["image", "sidecar", "json", "validation", "photography", "rust"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -43,14 +43,14 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sportball/sportball-sidecar-rust"
-Repository = "https://github.com/sportball/sportball-sidecar-rust"
-Documentation = "https://github.com/sportball/sportball-sidecar-rust#readme"
-"Bug Tracker" = "https://github.com/sportball/sportball-sidecar-rust/issues"
+Homepage = "https://github.com/dapperfu/image-sidecar-rust"
+Repository = "https://github.com/dapperfu/image-sidecar-rust"
+Documentation = "https://github.com/dapperfu/image-sidecar-rust#readme"
+"Bug Tracker" = "https://github.com/dapperfu/image-sidecar-rust/issues"
 
 [tool.maturin]
 python-source = "python"
-module-name = "sportball_sidecar_rust"
+module-name = "image_sidecar_rust"
 manifest-path = "Cargo.toml"
 bindings = "pyo3"
 features = ["python"]
@@ -80,7 +80,7 @@ extend-exclude = '''
 profile = "black"
 multi_line_output = 3
 line_length = 88
-known_first_party = ["sportball_sidecar_rust"]
+known_first_party = ["image_sidecar_rust"]
 
 [tool.mypy]
 python_version = "3.8"
@@ -123,7 +123,7 @@ python_functions = ["test_*"]
 addopts = [
     "--strict-markers",
     "--strict-config",
-    "--cov=sportball_sidecar_rust",
+    "--cov=image_sidecar_rust",
     "--cov-report=term-missing",
     "--cov-report=html",
     "--cov-report=xml",

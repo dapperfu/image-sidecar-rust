@@ -1,13 +1,13 @@
 [package]
-name = "sportball-sidecar-rust"
+name = "image-sidecar-rust"
 version = "0.1.0"  # Version managed by versioneer via pyproject.toml
 edition = "2021"
-authors = ["Sportball Team"]
-description = "High-performance Rust implementation for sportball JSON sidecar operations"
+authors = ["Image Sidecar Team"]
+description = "High-performance Rust implementation for image JSON sidecar operations"
 license = "MIT"
 
 [lib]
-name = "sportball_sidecar_rust"
+name = "image_sidecar_rust"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]

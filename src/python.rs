@@ -3,7 +3,7 @@
  * Generated via Cursor IDE (cursor.sh) with AI assistance
  * Model: Anthropic Claude 3.5 Sonnet
  * Generation timestamp: 2024-12-19T10:30:00Z
- * Context: Python bindings for sportball-sidecar-rust using PyO3
+ * Context: Python bindings for image-sidecar-rust using PyO3
  * 
  * Technical details:
  * - LLM: Claude 3.5 Sonnet (2024-10-22)
@@ -22,26 +22,26 @@ use serde_json::Value;
 use tokio::runtime::Runtime;
 
 use crate::{
-    SportballSidecar, SidecarFormat, OperationType, SidecarInfo,
+    ImageSidecar, SidecarFormat, OperationType, SidecarInfo,
     ValidationResult, StatisticsResult
 };
 
-/// Python wrapper for SportballSidecar
+/// Python wrapper for ImageSidecar
 #[pyclass]
-pub struct PySportballSidecar {
-    inner: SportballSidecar,
+pub struct PyImageSidecar {
+    inner: ImageSidecar,
     runtime: Runtime,
 }
 
 #[pymethods]
-impl PySportballSidecar {
-    /// Create a new SportballSidecar instance
+impl PyImageSidecar {
+    /// Create a new ImageSidecar instance
     #[new]
     pub fn new(max_workers: Option<usize>) -> PyResult<Self> {
         let runtime = Runtime::new()
             .map_err(|e| PyRuntimeError::new_err(format!("Failed to create runtime: {}", e)))?;
         
-        let inner = SportballSidecar::new(max_workers);
+        let inner = ImageSidecar::new(max_workers);
         
         Ok(Self { inner, runtime })
     }
@@ -320,8 +320,8 @@ impl From<StatisticsResult> for PyStatisticsResult {
 
 /// Python module definition
 #[pymodule]
-pub fn sportball_sidecar_rust(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<PySportballSidecar>()?;
+pub fn image_sidecar_rust(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_class::<PyImageSidecar>()?;
     m.add_class::<PySidecarFormat>()?;
     m.add_class::<PyOperationType>()?;
     m.add_class::<PySidecarInfo>()?;

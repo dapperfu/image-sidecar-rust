@@ -1,5 +1,5 @@
 """
-Tests for Python bindings of sportball-sidecar-rust.
+Tests for Python bindings of image-sidecar-rust.
 
 This module contains tests to verify that the Python bindings work correctly
 and provide the expected functionality.
@@ -9,26 +9,26 @@ import pytest
 import tempfile
 import os
 from pathlib import Path
-from sportball_sidecar_rust import SportballSidecar, SidecarFormat, OperationType
-from sportball_sidecar_rust.exceptions import SidecarError
+from image_sidecar_rust import ImageSidecar, SidecarFormat, OperationType
+from image_sidecar_rust.exceptions import SidecarError
 
 
-class TestSportballSidecar:
-    """Test cases for SportballSidecar class."""
+class TestImageSidecar:
+    """Test cases for ImageSidecar class."""
     
     def test_initialization(self) -> None:
-        """Test that SportballSidecar can be initialized."""
-        sidecar = SportballSidecar()
+        """Test that ImageSidecar can be initialized."""
+        sidecar = ImageSidecar()
         assert sidecar.rust_available is True
     
     def test_initialization_with_workers(self) -> None:
         """Test initialization with specific worker count."""
-        sidecar = SportballSidecar(max_workers=8)
+        sidecar = ImageSidecar(max_workers=8)
         assert sidecar.rust_available is True
     
     def test_validate_sidecars_empty_directory(self) -> None:
         """Test validation of empty directory."""
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         with tempfile.TemporaryDirectory() as temp_dir:
             results = sidecar.validate_sidecars(temp_dir)
@@ -37,7 +37,7 @@ class TestSportballSidecar:
     
     def test_get_statistics_empty_directory(self) -> None:
         """Test statistics collection for empty directory."""
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         with tempfile.TemporaryDirectory() as temp_dir:
             stats = sidecar.get_statistics(temp_dir)
@@ -52,7 +52,7 @@ class TestSportballSidecar:
     
     def test_find_sidecars_empty_directory(self) -> None:
         """Test finding sidecars in empty directory."""
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         with tempfile.TemporaryDirectory() as temp_dir:
             sidecars = sidecar.find_sidecars(temp_dir)
@@ -61,7 +61,7 @@ class TestSportballSidecar:
     
     def test_create_sidecar(self) -> None:
         """Test creating a sidecar file."""
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         with tempfile.TemporaryDirectory() as temp_dir:
             # Create a fake image file
@@ -91,7 +91,7 @@ class TestSportballSidecar:
     
     def test_cleanup_orphaned_empty_directory(self) -> None:
         """Test cleanup in empty directory."""
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         with tempfile.TemporaryDirectory() as temp_dir:
             count = sidecar.cleanup_orphaned(temp_dir)
@@ -100,7 +100,7 @@ class TestSportballSidecar:
     
     def test_convert_directory_format_empty_directory(self) -> None:
         """Test format conversion in empty directory."""
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         with tempfile.TemporaryDirectory() as temp_dir:
             count = sidecar.convert_directory_format(temp_dir, SidecarFormat.BINARY)
@@ -109,7 +109,7 @@ class TestSportballSidecar:
     
     def test_get_format_statistics_empty_directory(self) -> None:
         """Test format statistics for empty directory."""
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         with tempfile.TemporaryDirectory() as temp_dir:
             stats = sidecar.get_format_statistics(temp_dir)
@@ -118,7 +118,7 @@ class TestSportballSidecar:
     
     def test_set_get_default_format(self) -> None:
         """Test setting and getting default format."""
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         # Test setting different formats
         format_mappings = {"json": "json", "binary": "bin", "rkyv": "rkyv"}
@@ -197,7 +197,7 @@ class TestIntegration:
     
     def test_complete_workflow(self) -> None:
         """Test a complete workflow: create, validate, get stats."""
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)

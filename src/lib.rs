@@ -3,7 +3,7 @@
  * Generated via Cursor IDE (cursor.sh) with AI assistance
  * Model: Anthropic Claude 3.5 Sonnet
  * Generation timestamp: 2024-12-19T10:30:00Z
- * Context: Core library interface for sportball-sidecar-rust
+ * Context: Core library interface for image-sidecar-rust
  * 
  * Technical details:
  * - LLM: Claude 3.5 Sonnet (2024-10-22)
@@ -21,7 +21,7 @@ pub mod utils;
 pub mod python;
 
 #[cfg(feature = "python")]
-pub use python::sportball_sidecar_rust;
+pub use python::image_sidecar_rust;
 
 pub use sidecar::{
     SidecarManager, SidecarInfo, OperationType, SidecarError,
@@ -34,13 +34,13 @@ use anyhow::Result;
 use std::path::Path;
 
 /// Main entry point for sidecar operations
-pub struct SportballSidecar {
+pub struct ImageSidecar {
     manager: SidecarManager,
     processor: ParallelProcessor,
 }
 
-impl SportballSidecar {
-    /// Create a new SportballSidecar instance
+impl ImageSidecar {
+    /// Create a new ImageSidecar instance
     pub fn new(max_workers: Option<usize>) -> Self {
         let manager = SidecarManager::new();
         let processor = ParallelProcessor::new(max_workers.unwrap_or_else(|| {
@@ -113,7 +113,7 @@ mod tests {
         let image_path = temp_dir.path().join("test.jpg");
         fs::write(&image_path, b"fake image data").unwrap();
         
-        let sidecar = SportballSidecar::new(None);
+        let sidecar = ImageSidecar::new(None);
         let data = serde_json::json!({"test": "data"});
         
         let result = sidecar.create_sidecar(&image_path, OperationType::FaceDetection, data).await;
@@ -129,7 +129,7 @@ mod tests {
         let image_path = temp_dir.path().join("test.jpg");
         fs::write(&image_path, b"fake image data").unwrap();
         
-        let mut sidecar = SportballSidecar::new(None);
+        let mut sidecar = ImageSidecar::new(None);
         
         // Test creating sidecar with binary format
         sidecar.set_default_format(SidecarFormat::Binary);
@@ -159,7 +159,7 @@ mod tests {
         let image_path = temp_dir.path().join("test.jpg");
         fs::write(&image_path, b"fake image data").unwrap();
         
-        let mut sidecar = SportballSidecar::new(None);
+        let mut sidecar = ImageSidecar::new(None);
         
         // Set default format to JSON for this test
         sidecar.set_default_format(SidecarFormat::Json);

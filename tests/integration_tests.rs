@@ -3,7 +3,7 @@
  * Generated via Cursor IDE (cursor.sh) with AI assistance
  * Model: Anthropic Claude 3.5 Sonnet
  * Generation timestamp: 2024-12-19T10:30:00Z
- * Context: Integration tests for sportball-sidecar-rust
+ * Context: Integration tests for image-sidecar-rust
  * 
  * Technical details:
  * - LLM: Claude 3.5 Sonnet (2024-10-22)
@@ -13,8 +13,8 @@
  * - Dependencies: tempfile, tokio
  */
 
-use sportball_sidecar_rust::SportballSidecar;
-use sportball_sidecar_rust::sidecar::OperationType;
+use image_sidecar_rust::ImageSidecar;
+use image_sidecar_rust::sidecar::OperationType;
 use tempfile::TempDir;
 use std::fs;
 use serde_json::json;
@@ -26,7 +26,7 @@ async fn test_sidecar_creation_and_validation() {
     let image_path = temp_dir.path().join("test.jpg");
     fs::write(&image_path, b"fake image data").unwrap();
     
-    let sidecar = SportballSidecar::new(None);
+    let sidecar = ImageSidecar::new(None);
     let data = json!({
         "faces": [
             {
@@ -78,7 +78,7 @@ async fn test_statistics_generation() {
         fs::write(&sidecar_path, binary_data).unwrap();
     }
     
-    let sidecar = SportballSidecar::new(None);
+    let sidecar = ImageSidecar::new(None);
     let stats = sidecar.get_statistics(temp_dir.path()).await.unwrap();
     
     assert_eq!(stats.total_images, 5);
@@ -112,7 +112,7 @@ async fn test_orphaned_sidecar_cleanup() {
     let valid_sidecar = temp_dir.path().join("valid.json");
     fs::write(&valid_sidecar, serde_json::to_string_pretty(&sidecar_data).unwrap()).unwrap();
     
-    let sidecar = SportballSidecar::new(None);
+    let sidecar = ImageSidecar::new(None);
     let removed_count = sidecar.cleanup_orphaned(temp_dir.path()).await.unwrap();
     
     assert_eq!(removed_count, 1);
@@ -149,7 +149,7 @@ async fn test_parallel_processing() {
         fs::write(&sidecar_path, serde_json::to_string_pretty(&sidecar_data).unwrap()).unwrap();
     }
     
-    let sidecar = SportballSidecar::new(Some(8)); // Use 8 workers
+    let sidecar = ImageSidecar::new(Some(8)); // Use 8 workers
     let validation_results = sidecar.validate_sidecars(temp_dir.path()).await.unwrap();
     
     assert_eq!(validation_results.len(), 20);
@@ -182,7 +182,7 @@ async fn test_symlink_handling() {
     });
     fs::write(&sidecar_path, serde_json::to_string_pretty(&sidecar_data).unwrap()).unwrap();
     
-    let sidecar = SportballSidecar::new(None);
+    let sidecar = ImageSidecar::new(None);
     let sidecars = sidecar.find_sidecars(temp_dir.path()).await.unwrap();
     
     // Should find sidecar for the actual image

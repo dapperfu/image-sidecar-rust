@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Format Size Comparison Demo for sportball-sidecar-rust
+Format Size Comparison Demo for image-sidecar-rust
 
 This demo compares the file sizes of different sidecar formats:
 - JSON (human-readable, largest)
@@ -10,7 +10,7 @@ This demo compares the file sizes of different sidecar formats:
 
 import tempfile
 import os
-from sportball_sidecar_rust import SportballSidecar, OperationType, SidecarFormat
+from image_sidecar_rust import ImageSidecar, OperationType, SidecarFormat
 
 
 def create_test_data_with_different_sizes():
@@ -159,7 +159,7 @@ def compare_format_sizes():
         print("📊 FORMAT SIZE COMPARISON")
         print("=" * 60)
         
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         for test_case in test_cases:
             print(f"\n--- {test_case['name']} ---")
@@ -210,7 +210,7 @@ def demonstrate_format_efficiency():
         print(f"\n🚀 FORMAT EFFICIENCY DEMO")
         print("=" * 60)
         
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         # Create 100 files in each format
         num_files = 100

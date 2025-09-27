@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Date-based release management for sportball-sidecar-rust.
+Date-based release management for image-sidecar-rust.
 
 This script provides different release strategies:
 - daily: YYYY.MM.DD (e.g., 2025.09.26)
@@ -106,7 +106,7 @@ def create_release(release_type='daily', push=True, dry_run=False):
     print("   1. Create a GitHub release from this tag")
     print("   2. Update CHANGELOG.md if needed")
     print("   3. Test the release:")
-    print(f"      python -c \"import sportball_sidecar_rust; print(sportball_sidecar_rust.__version__)\"")
+    print(f"      python -c \"import image_sidecar_rust; print(image_sidecar_rust.__version__)\"")
     
     return True
 

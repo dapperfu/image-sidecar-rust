@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Real Format Size Comparison for sportball-sidecar-rust
+Real Format Size Comparison for image-sidecar-rust
 
 This shows the actual current implementation and explains the format differences.
 """
@@ -9,7 +9,7 @@ import tempfile
 import os
 import json
 import pickle
-from sportball_sidecar_rust import SportballSidecar, OperationType, SidecarFormat
+from image_sidecar_rust import ImageSidecar, OperationType, SidecarFormat
 
 
 def analyze_current_implementation():
@@ -51,7 +51,7 @@ def analyze_current_implementation():
         with open(image_path, "wb") as f:
             f.write(b"fake image data")
         
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         # Test current formats
         formats = [
@@ -184,7 +184,7 @@ def demonstrate_format_conversion():
     print("=" * 60)
     
     with tempfile.TemporaryDirectory() as temp_dir:
-        sidecar = SportballSidecar()
+        sidecar = ImageSidecar()
         
         # Create initial JSON file
         image_path = os.path.join(temp_dir, "test.jpg")

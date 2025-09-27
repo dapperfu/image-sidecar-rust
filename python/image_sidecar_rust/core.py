@@ -1,5 +1,5 @@
 """
-Core Python interface for sportball-sidecar-rust.
+Core Python interface for image-sidecar-rust.
 
 This module provides the main Python interface to the Rust implementation,
 offering high-performance sidecar file operations.
@@ -68,21 +68,21 @@ class OperationType:
         return f"OperationType('{self._operation}')"
 
 
-class SportballSidecar:
+class ImageSidecar:
     """
-    High-performance Rust implementation for sportball JSON sidecar operations.
+    High-performance Rust implementation for image JSON sidecar operations.
     
     This class provides a Python interface to the Rust implementation, offering
     3-10x performance improvements over pure Python implementations.
     
     Example:
-        >>> sidecar = SportballSidecar(max_workers=16)
+        >>> sidecar = ImageSidecar(max_workers=16)
         >>> results = sidecar.validate_sidecars("/path/to/directory")
         >>> stats = sidecar.get_statistics("/path/to/directory")
     """
     
     def __init__(self, max_workers: Optional[int] = None) -> None:
-        """Initialize the SportballSidecar instance.
+        """Initialize the ImageSidecar instance.
         
         Args:
             max_workers: Maximum number of worker threads. If None, uses all available CPU cores.

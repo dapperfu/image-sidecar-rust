@@ -3,7 +3,7 @@
  * Generated via Cursor IDE (cursor.sh) with AI assistance
  * Model: Anthropic Claude 3.5 Sonnet
  * Generation timestamp: 2024-12-19T10:30:00Z
- * Context: CLI interface for sportball-sidecar-rust
+ * Context: CLI interface for image-sidecar-rust
  * 
  * Technical details:
  * - LLM: Claude 3.5 Sonnet (2024-10-22)
@@ -14,13 +14,13 @@
  */
 
 use clap::{Parser, Subcommand};
-use sportball_sidecar_rust::{SportballSidecar, SidecarFormat};
+use image_sidecar_rust::{ImageSidecar, SidecarFormat};
 use std::path::PathBuf;
 use anyhow::Result;
 
 #[derive(Parser)]
-#[command(name = "sportball-sidecar-rust")]
-#[command(about = "High-performance Rust implementation for sportball JSON sidecar operations")]
+#[command(name = "image-sidecar-rust")]
+#[command(about = "High-performance Rust implementation for image JSON sidecar operations")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -127,7 +127,7 @@ async fn main() -> Result<()> {
     
     match cli.command {
         Commands::Validate { input, output, workers, operation_type: _ } => {
-            let sidecar = SportballSidecar::new(Some(workers));
+            let sidecar = ImageSidecar::new(Some(workers));
             let results = sidecar.validate_sidecars(&input).await?;
             
             let output_data = serde_json::json!({
@@ -146,7 +146,7 @@ async fn main() -> Result<()> {
         }
         
         Commands::Stats { input, output, operation_type: _ } => {
-            let sidecar = SportballSidecar::new(None);
+            let sidecar = ImageSidecar::new(None);
             let stats = sidecar.get_statistics(&input).await?;
             
             if output == "-" {
@@ -158,7 +158,7 @@ async fn main() -> Result<()> {
         }
         
         Commands::Cleanup { input, dry_run } => {
-            let sidecar = SportballSidecar::new(None);
+            let sidecar = ImageSidecar::new(None);
             
             if dry_run {
                 println!("Dry run mode - scanning for orphaned sidecar files in: {:?}", input);
@@ -171,7 +171,7 @@ async fn main() -> Result<()> {
         }
         
         Commands::Export { input, output, operation_type: _, format } => {
-            let sidecar = SportballSidecar::new(None);
+            let sidecar = ImageSidecar::new(None);
             let sidecars = sidecar.find_sidecars(&input).await?;
             
             match format.as_str() {
@@ -199,7 +199,7 @@ async fn main() -> Result<()> {
         }
         
         Commands::Convert { input, format, dry_run } => {
-            let sidecar = SportballSidecar::new(None);
+            let sidecar = ImageSidecar::new(None);
             
             // Parse target format
             let target_format = match format.to_lowercase().as_str() {
@@ -226,7 +226,7 @@ async fn main() -> Result<()> {
         }
         
         Commands::FormatStats { input, output } => {
-            let sidecar = SportballSidecar::new(None);
+            let sidecar = ImageSidecar::new(None);
             let format_stats = sidecar.get_format_statistics(&input).await?;
             
             let output_data = serde_json::json!({

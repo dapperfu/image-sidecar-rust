@@ -52,8 +52,8 @@ def get_config() -> VersioneerConfig:
     cfg.VCS = "git"
     cfg.style = "pep440"
     cfg.tag_prefix = "v"
-    cfg.parentdir_prefix = "sportball-sidecar-rust-"
-    cfg.versionfile_source = "python/sportball_sidecar_rust/_version.py"
+    cfg.parentdir_prefix = "image-sidecar-rust-"
+    cfg.versionfile_source = "python/image_sidecar_rust/_version.py"
     cfg.verbose = False
     return cfg
 

@@ -1,7 +1,7 @@
 """
-Sportball Sidecar Rust - High-performance Rust implementation for sportball JSON sidecar operations.
+Image Sidecar Rust - High-performance Rust implementation for image JSON sidecar operations.
 
-This package provides a high-performance Rust implementation for sportball JSON sidecar operations,
+This package provides a high-performance Rust implementation for image JSON sidecar operations,
 offering 3-10x performance improvements over Python implementations through:
 - Massive parallelism using rayon
 - Zero-copy operations
@@ -13,15 +13,15 @@ The package supports multiple formats (JSON, Binary, Rkyv) and provides comprehe
 sidecar file management capabilities.
 """
 
-from .core import SportballSidecar, SidecarFormat, OperationType
+from .core import ImageSidecar, SidecarFormat, OperationType
 from .exceptions import SidecarError, ValidationError, StatisticsError
 
 __version__ = "0.1.0"
-__author__ = "Sportball Team"
-__email__ = "team@sportball.com"
+__author__ = "Image Sidecar Team"
+__email__ = "team@imagesidecar.com"
 
 __all__ = [
-    "SportballSidecar",
+    "ImageSidecar",
     "SidecarFormat", 
     "OperationType",
     "SidecarError",

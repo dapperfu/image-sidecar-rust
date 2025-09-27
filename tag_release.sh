@@ -1,5 +1,5 @@
 #!/bin/bash
-# Date-based release tagging script for sportball-sidecar-rust
+# Date-based release tagging script for image-sidecar-rust
 
 set -e
 
@@ -34,4 +34,4 @@ echo ""
 echo "📋 Next steps:"
 echo "   1. Create a GitHub release from this tag"
 echo "   2. Update CHANGELOG.md if needed"
-echo "   3. Test the release: python -c \"import sportball_sidecar_rust; print(sportball_sidecar_rust.__version__)\""
+echo "   3. Test the release: python -c \"import image_sidecar_rust; print(image_sidecar_rust.__version__)\""
