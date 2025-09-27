@@ -1,0 +1,72 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+*.pdb
+
+# Python virtual environment
+/venv/
+/ENV/
+/env/
+/.venv/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+tmp.json
+*.log
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Benchmark results
+benchmark_results_*.json
+
+# Maturin build artifacts
+maturin/
+wheels/
+
+# Cargo lock (optional - uncomment if you want to ignore it)
+# Cargo.lock
+
+# Documentation build
+docs/_build/
+
+# Local configuration
+.env
+.env.local
+.env.*.local
+
+# Backup files
+*.bak
+*.backup
