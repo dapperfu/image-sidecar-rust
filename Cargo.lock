@@ -518,6 +518,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "image-sidecar-rust"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bincode",
+ "bytecheck",
+ "chrono",
+ "clap",
+ "criterion",
+ "pyo3",
+ "rayon",
+ "rkyv",
+ "rkyv_dyn",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "uuid",
+ "walkdir",
+]
+
+[[package]]
 name = "indoc"
 version = "2.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1174,31 +1199,6 @@ checksum = "233504af464074f9d066d7b5416c5f9b894a5862a6506e306f7b816cdd6f1807"
 dependencies = [
  "libc",
  "windows-sys 0.59.0",
-]
-
-[[package]]
-name = "sportball-sidecar-rust"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "bincode",
- "bytecheck",
- "chrono",
- "clap",
- "criterion",
- "pyo3",
- "rayon",
- "rkyv",
- "rkyv_dyn",
- "serde",
- "serde_json",
- "tempfile",
- "thiserror",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "uuid",
- "walkdir",
 ]
 
 [[package]]
