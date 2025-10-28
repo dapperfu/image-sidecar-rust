@@ -1,0 +1,473 @@
+[DOCUMENT]
+TITLE: Image Sidecar Rust - Comprehensive Requirements
+UID: DOC-IMAGE-SIDECAR-RUST-001
+VERSION: 2.0
+DATE: 2025-01-27
+CLASSIFICATION: Internal
+
+[GRAMMAR]
+ELEMENTS:
+- TAG: REQUIREMENT
+  FIELDS:
+  - TITLE: UID
+    TYPE: String
+    REQUIRED: True
+  - TITLE: TITLE
+    TYPE: String
+    REQUIRED: True
+  - TITLE: STATEMENT
+    TYPE: String
+    REQUIRED: True
+  - TITLE: RATIONALE
+    TYPE: String
+    REQUIRED: False
+  - TITLE: COMMENT
+    TYPE: String
+    REQUIRED: False
+  - TITLE: PRIORITY
+    TYPE: String
+    REQUIRED: False
+  - TITLE: STATUS
+    TYPE: String
+    REQUIRED: False
+
+[REQUIREMENT]
+UID: IMG-001
+TITLE: High-Performance Sidecar Operations
+STATEMENT: The system SHALL provide high-performance sidecar file operations with 3-10x performance improvement over pure Python implementations.
+RATIONALE: Performance improvements justify the Rust implementation effort and provide significant user value for large-scale image processing operations.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-001.1
+TITLE: Parallel Processing with Rayon
+STATEMENT: The system SHALL use rayon for data-parallel processing across all available CPU cores for maximum performance.
+RATIONALE: Rayon provides efficient work-stealing parallelism that scales with available CPU cores.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-001.2
+TITLE: Async I/O Operations
+STATEMENT: The system SHALL use async I/O operations with tokio for efficient file operations.
+RATIONALE: Async I/O prevents blocking and enables better performance under concurrent loads.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-001.3
+TITLE: Zero-Copy Operations
+STATEMENT: The system SHALL minimize memory allocations and copying operations where possible.
+RATIONALE: Zero-copy operations reduce memory usage and improve performance.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-002
+TITLE: Multiple Format Support
+STATEMENT: The system SHALL support three sidecar file formats: JSON (.json), Binary (.bin), and Rkyv (.rkyv) with automatic format detection.
+RATIONALE: Multiple format support enables users to choose the best format for their use case while maintaining backward compatibility.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-002.1
+TITLE: Format Priority for Reading
+STATEMENT: When reading sidecar files, the system SHALL try formats in order of efficiency: .bin -> .rkyv -> .json.
+RATIONALE: Trying most efficient formats first minimizes I/O and improves read performance.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-002.2
+TITLE: Binary Format as Default
+STATEMENT: The system SHALL use binary format (.bin) as the default format for all new sidecar files.
+RATIONALE: Binary format provides 50-70% size reduction and 3-10x performance improvement over JSON.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-002.3
+TITLE: Format Detection from Content
+STATEMENT: The system SHALL detect sidecar file format from both file extension and file content when extension is ambiguous.
+RATIONALE: Content-based detection provides robustness for sidecars that may have incorrect extensions.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-002.4
+TITLE: Format Conversion
+STATEMENT: The system SHALL support converting sidecar files between formats (JSON, Binary, Rkyv) with data integrity preservation.
+RATIONALE: Format conversion enables migration and optimization of existing sidecar collections.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-003
+TITLE: Python Bindings API
+STATEMENT: The system SHALL provide Python bindings via PyO3 with a clean Python API that mirrors the Rust implementation.
+RATIONALE: Python bindings enable the Rust performance in Python applications.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-003.1
+TITLE: save_data Method
+STATEMENT: The Python API SHALL provide a save_data(image_path, operation, data) method that accepts image path, operation type, and data dictionary, and returns sidecar info.
+RATIONALE: This is the primary API expected by Python applications for sidecar operations.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-003.2
+TITLE: Data Merging
+STATEMENT: The save_data method SHALL merge new data with existing sidecar data, preserving all operation types in a single sidecar file.
+RATIONALE: Multiple operations may write to the same sidecar file and data must be preserved.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-003.3
+TITLE: Operation Type Support
+STATEMENT: The Python API SHALL support all operation types: FACE_DETECTION, OBJECT_DETECTION, BALL_DETECTION, QUALITY_ASSESSMENT, GAME_DETECTION, YOLOV8, and UNIFIED.
+RATIONALE: All operation types must be supported for comprehensive image processing workflows.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-003.4
+TITLE: String and Enum Operation Types
+STATEMENT: The Python API SHALL accept both string operation types and OperationType enum values.
+RATIONALE: Flexible API design supports multiple usage patterns and backward compatibility.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-003.5
+TITLE: Nested Dictionary Support
+STATEMENT: The Python API SHALL support nested dictionary structures for storing multiple operations in a single sidecar file.
+RATIONALE: Nested dictionaries enable unified detection results with multiple operation types.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-003.6
+TITLE: No Python Fallback
+STATEMENT: The Python bindings SHALL NOT include any fallback logic to Python implementations. If Rust is unavailable or fails, an exception SHALL be raised.
+RATIONALE: Fallback code creates inferior solutions and is explicitly prohibited. Rust implementation must be available.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-004
+TITLE: CLI Tool
+STATEMENT: The system SHALL provide a command-line tool (image-sidecar-rust) with comprehensive functionality for sidecar management.
+RATIONALE: CLI tool enables batch operations and automation of sidecar management tasks.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-004.1
+TITLE: Validate Command
+STATEMENT: The CLI SHALL provide a 'validate' command to validate sidecar files in parallel with configurable worker count.
+RATIONALE: Validation is essential for ensuring sidecar data integrity.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-004.2
+TITLE: Stats Command
+STATEMENT: The CLI SHALL provide a 'stats' command to collect comprehensive statistics about sidecar files.
+RATIONALE: Statistics provide insights into sidecar coverage and usage patterns.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-004.3
+TITLE: Cleanup Command
+STATEMENT: The CLI SHALL provide a 'cleanup' command to remove orphaned sidecar files with dry-run support.
+RATIONALE: Orphaned sidecars waste storage and cleanup is essential for maintenance.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-004.4
+TITLE: Export Command
+STATEMENT: The CLI SHALL provide an 'export' command to export sidecar data to JSON or CSV formats.
+RATIONALE: Export functionality enables data analysis and migration workflows.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-004.5
+TITLE: Convert Command
+STATEMENT: The CLI SHALL provide a 'convert' command to convert sidecar files between formats with dry-run support.
+RATIONALE: Format conversion enables optimization of existing sidecar collections.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-004.6
+TITLE: FormatStats Command
+STATEMENT: The CLI SHALL provide a 'format-stats' command to report format distribution statistics.
+RATIONALE: Format statistics help users understand their sidecar format usage.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-005
+TITLE: Metadata Preservation
+STATEMENT: The system SHALL preserve and update metadata fields including created_at, last_updated, last_operation, image_path, symlink_path, and symlink_info.
+RATIONALE: Metadata is essential for sidecar management and symlink resolution.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-005.1
+TITLE: Automatic Timestamp Management
+STATEMENT: The system SHALL automatically set created_at on first save and update last_updated on each save operation.
+RATIONALE: Timestamps enable tracking of sidecar lifecycle and changes.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-005.2
+TITLE: Symlink Resolution
+STATEMENT: The system SHALL resolve symlinks to actual image paths and store both symlink and target information.
+RATIONALE: Symlink resolution is essential for proper sidecar-to-image associations.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-006
+TITLE: Error Handling
+STATEMENT: ALL errors during sidecar operations SHALL be properly propagated with descriptive error messages.
+RATIONALE: Proper error handling enables debugging and user feedback.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-006.1
+TITLE: Rust Panic Handling
+STATEMENT: Rust panics SHALL be caught and converted to Python exceptions with descriptive messages.
+RATIONALE: Panic handling prevents crashes and provides user-friendly error reporting.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-006.2
+TITLE: Error Types
+STATEMENT: The system SHALL define specific error types for different failure modes (IO, JSON, Serialization, Validation, etc.).
+RATIONALE: Specific error types enable precise error handling in calling code.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-007
+TITLE: Thread Safety
+STATEMENT: The Rust implementation SHALL be thread-safe for concurrent sidecar operations from multiple Python threads.
+RATIONALE: Thread safety is essential for parallel processing scenarios.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-007.1
+TITLE: Arc-Based State Sharing
+STATEMENT: The implementation SHALL use Arc for shared state to enable safe concurrent access.
+RATIONALE: Arc provides thread-safe shared ownership.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-007.2
+TITLE: No Mutable Global State
+STATEMENT: The implementation SHALL NOT use mutable global state.
+RATIONALE: Mutable globals are unsafe for concurrent access.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-008
+TITLE: Performance Benchmarks
+STATEMENT: The system SHALL include comprehensive performance benchmarks using Criterion.
+RATIONALE: Benchmarks measure and validate performance improvements.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-008.1
+TITLE: JSON Validation Benchmark
+STATEMENT: The system SHALL include benchmarks for JSON validation performance.
+RATIONALE: JSON validation is a core operation and performance is critical.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-008.2
+TITLE: Format Serialization Benchmark
+STATEMENT: The system SHALL include benchmarks comparing serialization performance across formats.
+RATIONALE: Serialization benchmarks demonstrate format performance differences.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-009
+TITLE: Integration Tests
+STATEMENT: The system SHALL include comprehensive integration tests for all features.
+RATIONALE: Integration tests ensure correct behavior of the complete system.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-009.1
+TITLE: Python Bindings Tests
+STATEMENT: The system SHALL include tests for the Python bindings that verify save_data() creates .bin files, data can be read back, and merging preserves all operation types.
+RATIONALE: Python bindings tests ensure correct Python API behavior.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-009.2
+TITLE: Format Roundtrip Tests
+STATEMENT: The system SHALL include roundtrip tests that verify data integrity when writing and reading in various formats.
+RATIONALE: Roundtrip tests ensure data integrity across format operations.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-009.3
+TITLE: Multi-Format Read Tests
+STATEMENT: The system SHALL include tests verifying automatic detection and reading of sidecars in all supported formats.
+RATIONALE: Multi-format read tests ensure format detection works correctly.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-010
+TITLE: Performance Targets
+STATEMENT: Binary format SHALL achieve at least 50% size reduction and 3-10x performance improvement compared to equivalent JSON format.
+RATIONALE: These performance targets justify binary format adoption.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-010.1
+TITLE: Storage Size Reduction
+STATEMENT: Binary format sidecars SHALL achieve 50-70% size reduction compared to equivalent JSON format.
+RATIONALE: Size reduction reduces storage requirements and improves file system performance.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-010.2
+TITLE: Serialization Performance
+STATEMENT: Binary format serialization SHALL be 3-5x faster than JSON serialization.
+RATIONALE: Serialization performance improves overall processing speed.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-010.3
+TITLE: Deserialization Performance
+STATEMENT: Binary format deserialization SHALL be 5-10x faster than JSON deserialization.
+RATIONALE: Deserialization performance improves sidecar reading speed for large datasets.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-011
+TITLE: Backward Compatibility
+STATEMENT: The system SHALL maintain backward compatibility with existing JSON sidecars.
+RATIONALE: Backward compatibility ensures existing deployments continue to function.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-011.1
+TITLE: JSON Format Support
+STATEMENT: The system SHALL continue to support JSON format sidecars indefinitely.
+RATIONALE: JSON format support ensures existing sidecars remain usable.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-011.2
+TITLE: Mixed Format Support
+STATEMENT: The system SHALL support directory structures containing both JSON and binary format sidecars.
+RATIONALE: Mixed format support enables gradual migration and coexistence during transitions.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-011.3
+TITLE: Data Integrity
+STATEMENT: Sidecar data SHALL remain identical regardless of storage format (JSON, Binary, Rkyv).
+RATIONALE: Data integrity ensures reliable sidecar operations regardless of format choice.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-012
+TITLE: Documentation
+STATEMENT: The system SHALL provide comprehensive documentation including README, API documentation, and usage examples.
+RATIONALE: Documentation enables users to understand and effectively use the system.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-012.1
+TITLE: README with Examples
+STATEMENT: The project SHALL include a README.md with installation instructions, usage examples, and feature overview.
+RATIONALE: README provides first impression and basic usage information.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-012.2
+TITLE: Python API Documentation
+STATEMENT: All Python classes and methods SHALL be documented with docstrings following NumPy style guidelines.
+RATIONALE: API documentation enables developers to use the Python bindings effectively.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-012.3
+TITLE: CLI Usage Examples
+STATEMENT: The documentation SHALL include examples for all CLI commands and their use cases.
+RATIONALE: CLI examples help users understand available functionality.
+PRIORITY: Medium
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-013
+TITLE: Installability
+STATEMENT: The system SHALL be installable via pip as a Python package with Rust extension module.
+RATIONALE: Pip installation is standard for Python packages.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-013.1
+TITLE: Build System Integration
+STATEMENT: The system SHALL use maturin for building the Python extension module.
+RATIONALE: Maturin provides seamless Rust-Python integration.
+PRIORITY: Critical
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-013.2
+TITLE: ABI Compatibility
+STATEMENT: The system SHALL be built with ABI3 compatibility for broader Python version support.
+RATIONALE: ABI3 compatibility enables use across multiple Python versions.
+PRIORITY: High
+STATUS: Implemented
+
+[REQUIREMENT]
+UID: IMG-014
+TITLE: License and Attribution
+STATEMENT: All code generated by AI SHALL include attribution comments with model information and generation metadata.
+RATIONALE: Attribution provides transparency about code origin and generation method.
+PRIORITY: Medium
+STATUS: Implemented
+
