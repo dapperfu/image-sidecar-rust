@@ -84,6 +84,12 @@ impl ImageSidecar {
     ) -> Result<SidecarInfo> {
         self.manager.save_data(image_path, operation, data).await
     }
+
+    /// Read sidecar data for an image path
+    /// Returns empty dict if no sidecar exists (does NOT raise error)
+    pub async fn read_data(&self, image_path: &Path) -> Result<serde_json::Value> {
+        self.manager.read_data(image_path).await
+    }
     
     /// Clean up orphaned sidecar files
     pub async fn cleanup_orphaned(&self, directory: &Path) -> Result<usize> {

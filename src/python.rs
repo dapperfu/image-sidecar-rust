@@ -128,6 +128,26 @@ impl PyImageSidecar {
         
         Ok(PySidecarInfo::from(sidecar_info))
     }
+
+    /// Read sidecar data for an image path
+    /// Returns empty dict if no sidecar exists (does NOT raise error)
+    pub fn read_data(&self, image_path: &str) -> PyResult<PyObject> {
+        let path = Path::new(image_path);
+        
+        let data = self.runtime.block_on(async {
+            self.inner.read_data(path).await
+        }).map_err(|e| PyRuntimeError::new_err(format!("Sidecar read failed: {}", e)))?;
+        
+        // Convert serde_json::Value to PyObject
+        let json_str = serde_json::to_string(&data)
+            .map_err(|e| PyRuntimeError::new_err(format!("Failed to serialize data: {}", e)))?;
+        
+        Python::with_gil(|py| {
+            let json_module = py.import("json")?;
+            let py_dict = json_module.call_method1("loads", (json_str,))?;
+            Ok(py_dict.to_object(py))
+        })
+    }
     
     /// Clean up orphaned sidecar files
     pub fn cleanup_orphaned(&self, directory: &str) -> PyResult<usize> {

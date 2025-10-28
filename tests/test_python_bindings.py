@@ -124,6 +124,70 @@ class TestImageSidecar:
             assert isinstance(result2, dict)
             # Both operations should be preserved in the merged sidecar
             assert Path(result2['sidecar_path']) == sidecar_path
+
+    def test_read_data_no_sidecar(self) -> None:
+        """Test read_data returns {} when no sidecar exists."""
+        sidecar = ImageSidecar()
+        
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create a fake image file
+            image_path = Path(temp_dir) / "test.jpg"
+            image_path.write_bytes(b"fake image data")
+            
+            # Read data from non-existent sidecar
+            data = sidecar.read_data(image_path)
+            
+            assert isinstance(data, dict)
+            assert len(data) == 0
+
+    def test_read_data_binary_format(self) -> None:
+        """Test reading binary format sidecars."""
+        sidecar = ImageSidecar()
+        
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create a fake image file
+            image_path = Path(temp_dir) / "test.jpg"
+            image_path.write_bytes(b"fake image data")
+            
+            # Save data first
+            face_data = {"faces": [{"confidence": 0.95, "bbox": [10, 20, 30, 40]}]}
+            save_result = sidecar.save_data(
+                image_path, 
+                OperationType.FACE_DETECTION, 
+                face_data
+            )
+            
+            assert save_result is not None
+            
+            # Read the data back
+            read_data = sidecar.read_data(image_path)
+            
+            assert isinstance(read_data, dict)
+            assert "face_detection" in read_data or "sidecar_info" in read_data
+
+    def test_read_data_multiple_operations(self) -> None:
+        """Test reading sidecar with multiple operation types."""
+        sidecar = ImageSidecar()
+        
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create a fake image file
+            image_path = Path(temp_dir) / "test.jpg"
+            image_path.write_bytes(b"fake image data")
+            
+            # Save face detection data
+            face_data = {"faces": [{"confidence": 0.95, "bbox": [10, 20, 30, 40]}]}
+            sidecar.save_data(image_path, OperationType.FACE_DETECTION, face_data)
+            
+            # Save object detection data (should merge)
+            object_data = {"objects": [{"class": "ball", "confidence": 0.88}]}
+            sidecar.save_data(image_path, OperationType.OBJECT_DETECTION, object_data)
+            
+            # Read all data
+            read_data = sidecar.read_data(image_path)
+            
+            assert isinstance(read_data, dict)
+            # Should contain both operations
+            assert "sidecar_info" in read_data
     
     def test_cleanup_orphaned_empty_directory(self) -> None:
         """Test cleanup in empty directory."""

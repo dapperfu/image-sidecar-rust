@@ -294,6 +294,44 @@ class ImageSidecar:
             }
         except Exception as e:
             raise SidecarError(f"Sidecar save failed: {e}")
+
+    def read_data(self, image_path: Union[str, Path]) -> Dict[str, Any]:
+        """Read sidecar data for an image.
+        
+        This method reads the sidecar file for the given image path, trying
+        formats in priority order: .bin -> .rkyv -> .json. It handles symlink
+        resolution automatically and returns all operation types in a nested
+        dictionary structure.
+        
+        Args:
+            image_path: Path to the image file
+            
+        Returns:
+            Dictionary containing all sidecar data including all operations.
+            Returns empty dict {} if no sidecar exists (does NOT raise error).
+            
+        Raises:
+            SidecarError: If reading fails (except when no sidecar exists)
+        """
+        if not self._rust_available:
+            raise SidecarError("Rust implementation not available")
+        
+        try:
+            image_path_str = str(image_path)
+            data = self._rust_impl.read_data(image_path_str)
+            
+            # Convert PyObject to Python dict
+            if data is None:
+                return {}
+            
+            # If it's already a dict, return it
+            if isinstance(data, dict):
+                return data
+            
+            # Otherwise convert to dict
+            return dict(data)
+        except Exception as e:
+            raise SidecarError(f"Sidecar read failed: {e}")
     
     def cleanup_orphaned(self, directory: Union[str, Path]) -> int:
         """Clean up orphaned sidecar files.

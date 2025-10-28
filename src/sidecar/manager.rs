@@ -211,6 +211,29 @@ impl SidecarManager {
         Ok(sidecar_info)
     }
 
+    /// Read sidecar data for an image path
+    /// This is the primary method for reading sidecar data in Python
+    /// Returns empty dict if no sidecar exists (does NOT raise error)
+    pub async fn read_data(&self, image_path: &Path) -> Result<Value> {
+        // Resolve symlink if needed
+        let (actual_image_path, _) = self.resolve_symlink(image_path).await?;
+
+        // Try formats in order of efficiency: bin -> rkyv -> json
+        let formats_to_try = [SidecarFormat::Binary, SidecarFormat::Rkyv, SidecarFormat::Json];
+        
+        for format in &formats_to_try {
+            let sidecar_path = actual_image_path.with_extension(format.extension());
+            
+            if sidecar_path.exists() {
+                // Load and return the sidecar data
+                return self.load_sidecar_data(&sidecar_path).await;
+            }
+        }
+
+        // Return empty dict if no sidecar found
+        Ok(Value::Object(serde_json::Map::new()))
+    }
+
     /// Create a new sidecar file for an image with a specific format
     pub async fn create_sidecar_with_format(
         &self,
