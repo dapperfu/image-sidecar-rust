@@ -101,11 +101,30 @@ bench-release:
 # Installation
 .PHONY: install
 install: $(RELEASE_BINARY)
-	cp $(RELEASE_BINARY) /usr/local/bin/image-sidecar-rust
+	@echo "Attempting to install to /usr/local/bin..."
+	@if cp $(RELEASE_BINARY) /usr/local/bin/image-sidecar-rust 2>/dev/null; then \
+		echo "✓ Installed to /usr/local/bin"; \
+	else \
+		echo "Permission denied for /usr/local/bin, installing to ~/.local/bin instead..."; \
+		mkdir -p ${HOME}/.local/bin; \
+		cp $(RELEASE_BINARY) ${HOME}/.local/bin/image-sidecar-rust; \
+		echo "✓ Installed to ${HOME}/.local/bin"; \
+		echo "Make sure ${HOME}/.local/bin is in your PATH"; \
+	fi
 
 .PHONY: uninstall
 uninstall:
-	rm -f /usr/local/bin/image-sidecar-rust
+	@echo "Removing image-sidecar-rust..."
+	@if rm -f /usr/local/bin/image-sidecar-rust 2>/dev/null; then \
+		echo "✓ Removed from /usr/local/bin"; \
+	else \
+		echo "Binary not found in /usr/local/bin"; \
+	fi
+	@if rm -f ${HOME}/.local/bin/image-sidecar-rust 2>/dev/null; then \
+		echo "✓ Removed from ${HOME}/.local/bin"; \
+	else \
+		echo "Binary not found in ${HOME}/.local/bin"; \
+	fi
 
 # Documentation
 .PHONY: docs
