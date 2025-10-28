@@ -1,6 +1,6 @@
 [package]
 name = "image-sidecar-rust"
-version = "0.1.3"  # Version managed by versioneer via pyproject.toml
+version = "0.2.0"  # Version managed by versioneer via pyproject.toml
 edition = "2021"
 authors = ["Image Sidecar Team"]
 description = "High-performance Rust implementation for image JSON sidecar operations"
