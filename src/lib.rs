@@ -74,6 +74,16 @@ impl ImageSidecar {
     ) -> Result<SidecarInfo> {
         self.manager.create_sidecar(image_path, operation, data).await
     }
+
+    /// Save data to a sidecar file, merging with existing data if present
+    pub async fn save_data(
+        &self,
+        image_path: &Path,
+        operation: OperationType,
+        data: serde_json::Value,
+    ) -> Result<SidecarInfo> {
+        self.manager.save_data(image_path, operation, data).await
+    }
     
     /// Clean up orphaned sidecar files
     pub async fn cleanup_orphaned(&self, directory: &Path) -> Result<usize> {

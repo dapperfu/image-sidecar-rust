@@ -101,6 +101,33 @@ impl PyImageSidecar {
         
         Ok(PySidecarInfo::from(sidecar_info))
     }
+
+    /// Save data to a sidecar file, merging with existing data if present
+    /// This is the primary method expected by sportball Python code
+    pub fn save_data(
+        &self,
+        image_path: &str,
+        operation: PyOperationType,
+        data: &PyDict,
+    ) -> PyResult<PySidecarInfo> {
+        let path = Path::new(image_path);
+        
+        // Convert PyDict to JSON string manually
+        let json_str = Python::with_gil(|py| {
+            let json_module = py.import("json")?;
+            let json_str = json_module.call_method1("dumps", (data,))?;
+            json_str.extract::<String>()
+        }).map_err(|e| PyRuntimeError::new_err(format!("Failed to convert data to JSON: {}", e)))?;
+        
+        let json_value: Value = serde_json::from_str(&json_str)
+            .map_err(|e| PyRuntimeError::new_err(format!("Invalid JSON: {}", e)))?;
+        
+        let sidecar_info = self.runtime.block_on(async {
+            self.inner.save_data(path, operation.into(), json_value).await
+        }).map_err(|e| PyRuntimeError::new_err(format!("Sidecar save failed: {}", e)))?;
+        
+        Ok(PySidecarInfo::from(sidecar_info))
+    }
     
     /// Clean up orphaned sidecar files
     pub fn cleanup_orphaned(&self, directory: &str) -> PyResult<usize> {
@@ -214,6 +241,7 @@ impl PyOperationType {
             "quality_assessment" => OperationType::QualityAssessment,
             "game_detection" => OperationType::GameDetection,
             "yolov8" => OperationType::Yolov8,
+            "unified" => OperationType::Unified,
             _ => return Err(PyRuntimeError::new_err(format!("Unknown operation: {}", op_str))),
         };
         Ok(Self { inner: op })

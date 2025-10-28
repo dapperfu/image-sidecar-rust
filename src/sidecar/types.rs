@@ -27,6 +27,7 @@ pub enum OperationType {
     QualityAssessment,
     GameDetection,
     Yolov8,
+    Unified,
     Unknown,
 }
 
@@ -39,6 +40,7 @@ impl OperationType {
             OperationType::QualityAssessment => "quality_assessment",
             OperationType::GameDetection => "game_detection",
             OperationType::Yolov8 => "yolov8",
+            OperationType::Unified => "unified",
             OperationType::Unknown => "unknown",
         }
     }
@@ -51,6 +53,7 @@ impl OperationType {
             "quality_assessment" => OperationType::QualityAssessment,
             "game_detection" => OperationType::GameDetection,
             "yolov8" => OperationType::Yolov8,
+            "unified" => OperationType::Unified,
             _ => OperationType::Unknown,
         }
     }

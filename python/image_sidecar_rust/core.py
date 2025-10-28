@@ -46,6 +46,7 @@ class OperationType:
     QUALITY_ASSESSMENT = "quality_assessment"
     GAME_DETECTION = "game_detection"
     YOLOV8 = "yolov8"
+    UNIFIED = "unified"
     
     def __init__(self, operation_str: str) -> None:
         """Initialize with operation string.
@@ -56,7 +57,7 @@ class OperationType:
         operation_str = operation_str.lower()
         if operation_str not in [
             self.FACE_DETECTION, self.OBJECT_DETECTION, self.BALL_DETECTION,
-            self.QUALITY_ASSESSMENT, self.GAME_DETECTION, self.YOLOV8
+            self.QUALITY_ASSESSMENT, self.GAME_DETECTION, self.YOLOV8, self.UNIFIED
         ]:
             raise ValueError(f"Unknown operation: {operation_str}")
         self._operation = operation_str
@@ -243,6 +244,56 @@ class ImageSidecar:
             }
         except Exception as e:
             raise SidecarError(f"Sidecar creation failed: {e}")
+    
+    def save_data(
+        self,
+        image_path: Union[str, Path],
+        operation: Union[str, OperationType],
+        data: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """Save data to a sidecar file, merging with existing data if present.
+        
+        This is the primary method expected by sportball Python code.
+        It merges new data with existing sidecar data, preserving all operation types.
+        
+        Args:
+            image_path: Path to the image file
+            operation: Operation type (string or OperationType enum)
+            data: Data to store in the sidecar file
+            
+        Returns:
+            Dictionary with sidecar info
+            
+        Raises:
+            SidecarError: If sidecar save fails
+        """
+        if not self._rust_available:
+            raise SidecarError("Rust implementation not available")
+        
+        try:
+            image_path_str = str(image_path)
+            if isinstance(operation, str):
+                op_type = OperationType(operation)
+            else:
+                op_type = operation
+            
+            # Convert Python OperationType to Rust PyOperationType
+            import image_sidecar_rust.image_sidecar_rust as rust_ext
+            rust_op_type = rust_ext.PyOperationType(str(op_type))
+            
+            sidecar_info = self._rust_impl.save_data(
+                image_path_str, rust_op_type, data
+            )
+            return {
+                'image_path': sidecar_info.image_path,
+                'sidecar_path': sidecar_info.sidecar_path,
+                'operation': str(sidecar_info.operation),
+                'data_size': sidecar_info.data_size,
+                'created_at': sidecar_info.created_at,
+                'is_valid': sidecar_info.is_valid,
+            }
+        except Exception as e:
+            raise SidecarError(f"Sidecar save failed: {e}")
     
     def cleanup_orphaned(self, directory: Union[str, Path]) -> int:
         """Clean up orphaned sidecar files.

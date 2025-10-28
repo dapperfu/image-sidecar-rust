@@ -131,6 +131,86 @@ impl SidecarManager {
         self.create_sidecar_with_format(image_path, operation, data, self.default_format).await
     }
 
+    /// Save data to a sidecar file, merging with existing data if present
+    /// This is the primary method expected by sportball Python code
+    pub async fn save_data(
+        &self,
+        image_path: &Path,
+        operation: OperationType,
+        data: Value,
+    ) -> Result<SidecarInfo> {
+        // Resolve symlink if needed
+        let (actual_image_path, symlink_info) = self.resolve_symlink(image_path).await?;
+
+        // Create sidecar path next to actual image with binary format
+        let sidecar_path = actual_image_path.with_extension("bin");
+
+        // Load existing data if sidecar exists, otherwise start with empty
+        let mut existing_data = if sidecar_path.exists() {
+            self.load_sidecar_data(&sidecar_path).await.unwrap_or_else(|_| Value::Object(serde_json::Map::new()))
+        } else {
+            Value::Object(serde_json::Map::new())
+        };
+
+        // Merge the new data into existing data
+        if let Some(obj) = existing_data.as_object_mut() {
+            // Insert or update the operation data
+            obj.insert(operation.as_str().to_string(), data);
+
+            // Update sidecar_info if it exists, otherwise create new
+            if let Some(sidecar_info) = obj.get_mut("sidecar_info") {
+                if let Some(sidecar_obj) = sidecar_info.as_object_mut() {
+                    sidecar_obj.insert("last_updated".to_string(), 
+                        serde_json::Value::String(Utc::now().to_rfc3339()));
+                    sidecar_obj.insert("last_operation".to_string(), 
+                        serde_json::Value::String(operation.as_str().to_string()));
+                }
+            } else {
+                let mut sidecar_info = serde_json::Map::new();
+                sidecar_info.insert("created_at".to_string(), 
+                    serde_json::Value::String(Utc::now().to_rfc3339()));
+                sidecar_info.insert("last_updated".to_string(), 
+                    serde_json::Value::String(Utc::now().to_rfc3339()));
+                sidecar_info.insert("last_operation".to_string(), 
+                    serde_json::Value::String(operation.as_str().to_string()));
+                sidecar_info.insert("image_path".to_string(), 
+                    serde_json::Value::String(actual_image_path.to_string_lossy().to_string()));
+                sidecar_info.insert("symlink_path".to_string(), 
+                    serde_json::Value::String(image_path.to_string_lossy().to_string()));
+                
+                // Serialize symlink_info if present
+                if let Some(symlink) = &symlink_info {
+                    sidecar_info.insert("symlink_info".to_string(), serde_json::json!({
+                        "symlink_path": symlink.symlink_path.to_string_lossy(),
+                        "target_path": symlink.target_path.to_string_lossy(),
+                        "is_symlink": symlink.is_symlink,
+                        "broken": symlink.broken
+                    }));
+                }
+                
+                obj.insert("sidecar_info".to_string(), Value::Object(sidecar_info));
+            }
+        }
+
+        // Serialize using binary format
+        let serializer = self.format_manager.get_serializer(SidecarFormat::Binary);
+        let content_bytes = serializer.serialize(&existing_data)
+            .map_err(|e| SidecarError::SerializationError(e.to_string()))?;
+        
+        fs::write(&sidecar_path, &content_bytes).await?;
+
+        let mut sidecar_info = SidecarInfo::new(
+            image_path.to_path_buf(),
+            sidecar_path.clone(),
+            operation,
+            symlink_info,
+        );
+        sidecar_info.data_size = content_bytes.len() as u64;
+        sidecar_info.is_valid = true;
+
+        Ok(sidecar_info)
+    }
+
     /// Create a new sidecar file for an image with a specific format
     pub async fn create_sidecar_with_format(
         &self,

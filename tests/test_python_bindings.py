@@ -89,6 +89,42 @@ class TestImageSidecar:
             assert sidecar_path.exists()
             assert sidecar_path.stat().st_size > 0
     
+    def test_save_data(self) -> None:
+        """Test save_data method with merge functionality."""
+        sidecar = ImageSidecar()
+        
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create a fake image file
+            image_path = Path(temp_dir) / "test.jpg"
+            image_path.write_bytes(b"fake image data")
+            
+            # First save - face detection
+            face_data = {"faces": [{"confidence": 0.95, "bbox": [10, 20, 30, 40]}]}
+            result1 = sidecar.save_data(
+                image_path, 
+                OperationType.FACE_DETECTION, 
+                face_data
+            )
+            
+            assert isinstance(result1, dict)
+            assert 'sidecar_path' in result1
+            
+            # Verify the sidecar file was created
+            sidecar_path = Path(result1['sidecar_path'])
+            assert sidecar_path.exists()
+            
+            # Second save - object detection (should merge with existing)
+            object_data = {"objects": [{"class": "ball", "confidence": 0.88}]}
+            result2 = sidecar.save_data(
+                image_path, 
+                OperationType.OBJECT_DETECTION, 
+                object_data
+            )
+            
+            assert isinstance(result2, dict)
+            # Both operations should be preserved in the merged sidecar
+            assert Path(result2['sidecar_path']) == sidecar_path
+    
     def test_cleanup_orphaned_empty_directory(self) -> None:
         """Test cleanup in empty directory."""
         sidecar = ImageSidecar()
@@ -169,7 +205,8 @@ class TestOperationType:
             "ball_detection",
             "quality_assessment",
             "game_detection",
-            "yolov8"
+            "yolov8",
+            "unified"
         ]
         
         for op in operations:
